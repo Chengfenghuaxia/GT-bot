@@ -173,7 +173,7 @@ func RevokeChatInviteLink(chatID int64, superGroupUsername string, inviteLink st
 }
 
 // 批准聊天加入请求
-func ApproveChatJoinRequest(chatID int64, superGroupUsername string, userID int64) (tgbotapi.Message, error) {
+func (m *TelegramService) ApproveChatJoinRequest(chatID int64, superGroupUsername string, userID int64) (tgbotapi.Message, error) {
 	config := tgbotapi.ApproveChatJoinRequestConfig{
 		ChatConfig: tgbotapi.ChatConfig{
 			ChatID:             chatID,
@@ -257,7 +257,6 @@ func (m *TelegramService) DeleteMessageConfig(ChannelUsername string, chatID int
 		ChatID:          chatID,
 		MessageID:       messageID,
 	}
-	//return global.TelegramBot.Send(config)
 	return global.TelegramBot.Send(config)
 }
 
@@ -271,3 +270,34 @@ func (m *TelegramService) SendLocation(chatID int64, latitude, longitude string)
 	config := tgbotapi.NewContact(chatID, latitude, longitude)
 	return global.TelegramBot.Send(config)
 }
+
+// 消息发送频道
+func NewMessageToChannel(username string, text string) (tgbotapi.Message, error) {
+	config := tgbotapi.NewMessageToChannel(username, text)
+	return global.TelegramBot.Send(config)
+}
+
+// 内联键盘按钮数据
+func InlineKeyboardButtonData(chatID int64, text, data string) (tgbotapi.Message, error) {
+	rows := []tgbotapi.InlineKeyboardButton{tgbotapi.NewInlineKeyboardButtonData(text, data)}
+	msg := tgbotapi.NewMessage(chatID, text)
+	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(rows)
+	return global.TelegramBot.Send(msg)
+}
+
+// 内联键盘按钮登录URL
+func InlineKeyboardButtonLoginURL(chatID int64, text string, loginURL tgbotapi.LoginURL) (tgbotapi.Message, error) {
+	rows := []tgbotapi.InlineKeyboardButton{tgbotapi.NewInlineKeyboardButtonLoginURL(text, loginURL)}
+	msg := tgbotapi.NewMessage(chatID, text)
+	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(rows)
+	return global.TelegramBot.Send(msg)
+}
+
+//func InlineKeyboardRow(btn tgbotapi.InlineKeyboardButton) (tgbotapi.Message, error) {
+//	rows := []tgbotapi.InlineKeyboardButton{btn}
+//
+//	msg := tgbotapi.NewMessage(btn.CallbackQuery.Message.Chat.ID, btn.CallbackQuery.Message.Text)
+//	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(rows)
+//
+//	return global.TelegramBot.Send(msg)
+//}
