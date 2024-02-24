@@ -70,6 +70,7 @@ var numericKeyboard1 = tgbotapi.NewReplyKeyboard(
 
 // 实体键盘按钮2
 var numericKeyboard2 = tgbotapi.NewReplyKeyboard(
+
 	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("Text"),
 		tgbotapi.NewKeyboardButton("Photo"),
@@ -107,46 +108,71 @@ func main() {
 		// Check if we've gotten a message update.
 		if update.Message != nil {
 			asd = "哈哈"
-			msg := tgbotapi.MessageConfig{
-				BaseChat: tgbotapi.BaseChat{
-					ChatID:           update.Message.Chat.ID,
-					ReplyToMessageID: 0,
-				},
-				Text:                  "11",
-				DisableWebPagePreview: false,
-			}
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "没有定义")
 
 			msg.ReplyMarkup = numericKeyboard1
 
 			fmt.Println(update.Message.Text, "我在这里打印刚刚输入的内容")
-
+			if update.Message.Photo != nil && len(update.Message.Photo) > 0 {
+				text := "​按以下格式发送链接：\n[按钮文字+链接]\n\n例子：\n[翻译+https://t.me/TransioBot]\n\n要在一行中添加多个按钮，请在前面的按钮旁边写下链接。\n格式：\n[第一个文本 + 第一个链接] [第二个文本 + 第二个链接]\n\n要将多个按钮添加到一行，请从新行写入新链接。\n格式：\n[第一个文字+第一个链接]\n[第二条文字+第二条链接]"
+				ser.SendMessageText(update.Message.Chat.ID, text, "")
+				return
+			}
 			switch update.Message.Text {
 			case "open":
+				msg.Text = "1233"
 				msg.ReplyMarkup = numericKeyboard
+				break
 			case "6":
 
-				file := tgbotapi.FileURL("https://cdn.pixabay.com/photo/2017/03/12/11/30/alishan-2136879_1280.jpg")
-				_, err := ser.SendMessagePhoto(update.Message.Chat.ID, file, "这里是图片")
+				file := tgbotapi.FileID("AgACAgIAAxkBAAIB72XYuugAAX-HkbphYKJk-OT22J5IewACW9QxG6klyEo43dfrCTb_vQEAAwIAA3MAAzQE")
+				var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
+					tgbotapi.NewInlineKeyboardRow(
+						tgbotapi.NewInlineKeyboardButtonURL("链接按钮", "https://t.me/afeng12a"),
+					),
+				)
+				msg.ReplyMarkup = numericKeyboard
+				_, err := ser.SendMessagePhoto(update.Message.Chat.ID, file, "")
 				if err != nil {
 					fmt.Println(err, "在这里查看错误")
 					return
 				}
 
+				break
+			case "7":
+				_, _ = ser.CopyMessage(5903362571, update.Message.Chat.ID, 543)
+				//if err != nil {
+				//	return
+				//}
+				//msg.Text = message.Text
+				//msg.ReplyMarkup = message.ReplyMarkup
+				//if _, err = bot.Send(msg); err != nil {
+				//	panic(err)
+				//}
+				break
+
 			case "📃Post yaratish":
-				fmt.Println("我这里输入5了！！！！！！！！！！！！！！！！！")
+				fmt.Println("入我这里输5了！！！！！！！！！！！！！！！！！")
+				msg.Text = "我这里输了：📃Post yaratish"
 				msg.ReplyMarkup = numericKeyboard2
-			case "photo":
-				fmt.Println("123")
+				break
+			case "Photo":
+				msg.Text = "请发图片"
+				break
 			case "复读":
 				if _, err = bot.Send(msg); err != nil {
 					panic(err)
 				}
+				break
+			default:
+				msg.Text = "没有定义"
+				break
 			}
 
 			// Send the message.
-			if _, err = bot.Send(msg); err != nil {
-				panic(err)
-			}
+			//if _, err = bot.Send(msg); err != nil {
+			//	panic(err)
+			//}
 		} else if update.CallbackQuery != nil {
 			// Respond to the callback query, telling Telegram to show the user
 			// a message with the data received.
@@ -154,7 +180,7 @@ func main() {
 			if _, err := bot.Request(callback); err != nil {
 				panic(err)
 			}
-
+			fmt.Println("---->" + update.CallbackQuery.Data)
 			// And finally, send a message containing the data received.
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data)
 			if _, err := bot.Send(msg); err != nil {
@@ -164,3 +190,5 @@ func main() {
 
 	}
 }
+
+//file_id:AgACAgIAAxkBAAIB72XYuugAAX-HkbphYKJk-OT22J5IewACW9QxG6klyEo43dfrCTb_vQEAAwIAA3MAAzQE
